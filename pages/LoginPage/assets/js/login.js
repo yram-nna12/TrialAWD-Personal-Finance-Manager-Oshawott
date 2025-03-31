@@ -19,7 +19,9 @@ document.getElementById("login").addEventListener("submit", function name(event)
             alert("Success!");
 
             // Store user data
-            localStorage.setItem("user", JSON.stringify({ name: users.name, email: users.email }));
+            localStorage.setItem("id", users.id); // Ensure ID is stored separately
+            localStorage.setItem("user", JSON.stringify(users)); // Store full user object
+
 
             window.location.replace("/index.html");
         } else {

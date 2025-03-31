@@ -1,61 +1,39 @@
-
-
-
-
-
 document.addEventListener("DOMContentLoaded", () => {
-    const userNameElement = document.getElementById("userName");
+    updateProfileUI(); // Load profile details on page load
 
-    // Retrieve user data from localStorage
+    // Listen for storage changes to dynamically update UI
+    window.addEventListener("storage", updateProfileUI);
+});
+
+function updateProfileUI() {
+    const userNameElement = document.getElementById("userName");
+    const fullNameElement = document.getElementById("fullName");
+    const emailElement = document.getElementById("email");
+
+    // Retrieve latest user data from localStorage
     const storedUser = localStorage.getItem("user");
 
     if (!storedUser) {
-        userNameElement.textContent = "Guest"; // Default if no user data
+        userNameElement.textContent = "Guest"; // Default name if no user found
+        fullNameElement.textContent = "Not available";
+        emailElement.textContent = "Not available";
         return;
     }
 
-    // Parse stored JSON data
     const userData = JSON.parse(storedUser);
 
-    // Extract first name
-    const fullName = userData.name || "User"; // Default if name is missing
-    const firstName = fullName.split(",")[0].trim(); // Extract first part and remove any comma
+    // Handle name formatting (remove unnecessary commas)
+    let fullName = userData.name ? userData.name.replace(/,\s?/g, " ") : "User";
+    let firstName = fullName.split(" ")[0]; // Extract first name
 
-    // Display first name without comma
+    // Update UI elements
     userNameElement.textContent = firstName;
-});
-
-
-/* Personal Information */
-/* Personal Information */
-
-document.addEventListener("DOMContentLoaded", () => {
-    const fullNameElement = document.getElementById("fullName");
-    const emailElement = document.getElementById("email");
-    const sexElement = document.getElementById("sex"); // Make sure this ID matches your HTML
-
-    // Retrieve user data from localStorage
-    const storedUser = localStorage.getItem("user");
-
-    if (!storedUser) return; // If no user data, keep fields empty
-
-    // Parse stored JSON data
-    const userData = JSON.parse(storedUser);
-
-    // Remove comma if accidentally stored in last name format
-    let fullName = userData.name ? userData.name.replace(/,\s?/g, " ") : "";
-
-    // Update values dynamically
     fullNameElement.textContent = fullName;
-    emailElement.textContent = userData.email || "";
-    sexElement.textContent = userData.sex || ""; // FIXED: Changed genderElement to sexElement
-});
+    emailElement.textContent = userData.email || "No email provided";
+}
 
-
-
-// edit bio
+/* Edit Bio Functionality */
 document.addEventListener("DOMContentLoaded", function () {
-    // Load saved bio from localStorage
     const savedBio = localStorage.getItem("userBio");
     const bioText = document.getElementById("bioText");
 
@@ -79,7 +57,6 @@ function saveBio() {
 
     bioText.textContent = newBio;
     localStorage.setItem("userBio", newBio); // Save to localStorage
-
     closeBioModal();
 }
 
